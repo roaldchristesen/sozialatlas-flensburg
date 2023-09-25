@@ -1,5 +1,6 @@
 <?php
 
+include_once("config.php");
 // include_once("./../core/core.php"); // TODO: To use or not to use?
 
 
@@ -581,10 +582,15 @@ function printArray($data, $indent = 0) {
     }
 }
 
+$connection_string =
+    "host=" . $GLOBALS['DB_HOST'] .
+    " port=" . $GLOBALS['DB_PORT'] .
+    " dbname=" . $GLOBALS['DB_NAME'] .
+    " user=" . $GLOBALS['DB_USER'] .
+    " password=" . $GLOBALS['DB_PWD'];
 
+$pg = pg_pconnect($connection_string);
 
-// TODO: Place database connection, so that login data isn´t visisble
-$pg = pg_pconnect("host=localhost port=5432 dbname=sozialatlas user=postgres password=111");
 
 $query = <<<EOSQL
     SELECT
