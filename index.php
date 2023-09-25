@@ -787,7 +787,8 @@ if ($result) {
             <p>Experimentelle Testversion, Stand 24.09.2023, oklabflensburg.de</p>
         </div>
         <div style="margin-left: auto; padding:20px;">
-            <img src="img/stadtteile.svg" style="width:700px; height:500px; margin-right:32px;">
+            <?php include("img/flensburg-stadtteile.svg"); ?>
+            <!--img src="img/stadtteile.svg" style="width:700px; height:500px; margin-right:32px;"-->
             <img src="img/flensburg-logo.svg" style="width:200px; height:60px; margin-right:32px;">
             <img src="img/oklab-flensburg-logo.svg" style="width:60px; height:60px;">
         </div>

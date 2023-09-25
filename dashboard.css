@@ -147,6 +147,21 @@ header {
 }
 
 
+.svg-xxxx * {
+  transition: all 0.25s ease-out;
+}
+
+
+.svg-xxxx {
+    fill: #d1e4fd;
+}
+
+
+.svg-xxxx:hover {
+    fill: #0069f6;
+}
+
+
 .sticky-bottom {
     position: sticky;
     bottom: 0;
@@ -155,6 +170,8 @@ header {
     background-color: #fff;
     border-top: 1px solid black;
 }
+
+
 
 
 @media (max-width: 900px) {
