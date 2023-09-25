@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darken Hover Effect for Vertical Bars</title>
+</head>
+<body>
+    <canvas id="barChart" width="300" height="200" data-values="50,30,70,45,90,60,20,75,40,85"></canvas>
+    <div id="info"></div>
+
+    <script>
+        const canvas = document.getElementById('barChart');
+        const ctx = canvas.getContext('2d');
+        const barSpacing = 4;
+        const barWidth = (canvas.width - barSpacing * 10) / 10;
+        const maxValue = Math.max(...getValuesFromDataAttribute(canvas));
+        const scaleFactor = canvas.height / maxValue;
+        const barColors = [
+            [100, 0, 200], [100, 0, 200], [100, 0, 200], [100, 0, 200],
+            [100, 0, 200], [100, 0, 200], [100, 0, 200], [100, 0, 200],
+            [100, 0, 200], [100, 0, 200]];
+        const darkeningFactor = 0.7; // Factor to darken the color
+        const infoElement = document.getElementById('info');
+
+        canvas.addEventListener('mousemove', handleMouseHover);
+        canvas.addEventListener('mouseleave', handleMouseExit);
+
+        let hoveredBarIndex = -1;
+
+        function drawBars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const values = getValuesFromDataAttribute(canvas);
+
+            for (let i = 0; i < values.length; i++) {
+                const value = values[i];
+                const x = i * (barWidth + barSpacing);
+                const barHeight = value * scaleFactor;
+                const y = canvas.height - barHeight;
+                const isHovered = i === hoveredBarIndex;
+
+                // Calculate the color for the bar
+                const color = isHovered ? darkenColor(barColors[i]) : barColors[i];
+
+                ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                if (isHovered) {
+                    // Display the value of the hovered bar in the infoElement
+                    infoElement.textContent = `Hovered Value: ${values[hoveredBarIndex]}`;
+                }
+            }
+        }
+
+        function handleMouseHover(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            hoveredBarIndex = Math.floor(mouseX / (barWidth + barSpacing));
+
+            drawBars();
+        }
+
+        function handleMouseExit() {
+            hoveredBarIndex = -1;
+
+            drawBars();
+            infoElement.textContent = ''; // Clear the info element when mouse exits
+        }
+
+        // Helper function to get values from data attribute
+        function getValuesFromDataAttribute(element) {
+            const valuesAttribute = element.getAttribute('data-values');
+            if (valuesAttribute) {
+                return valuesAttribute.split(',').map(Number);
+            }
+            return [];
+        }
+
+        // Helper function to darken a color
+        function darkenColor(color) {
+            const r = Math.round(color[0] * darkeningFactor);
+            const g = Math.round(color[1] * darkeningFactor);
+            const b = Math.round(color[2] * darkeningFactor);
+            return [r, g, b];
+        }
+
+        drawBars();
+    </script>
+</body>
+</html>
