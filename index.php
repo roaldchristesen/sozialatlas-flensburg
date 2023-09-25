@@ -582,6 +582,8 @@ function printArray($data, $indent = 0) {
     }
 }
 
+
+// TODO: .env file!
 $connection_string =
     "host=" . $GLOBALS['DB_HOST'] .
     " port=" . $GLOBALS['DB_PORT'] .
@@ -745,14 +747,12 @@ $query = <<<EOSQL
     ORDER BY
         d.id, rd.year;
 EOSQL;
-
+/*
 $result = pg_query($pg, $query);
 if ($result) {
     $rowIndex = 0;
     while ($row = pg_fetch_assoc($result)) {
-//        $districtDetails = new DistrictDetails();
         $data = json_decode($row['data_by_year_and_district'], true);
-        // print_r($data);
         $district = $app->districtById($data['district_id'], $data['district_name']);
         if ($district) {
             $district->pushDetails($data);
@@ -760,17 +760,33 @@ if ($result) {
         else {
             // TODO: Error message
         }
-
         $rowIndex++;
     }
-
     $app->setDistrictById($paramDistrictId);
     $app->setYear($paramYear);
 }
+*/
 
+$datafile = fopen("data.txt", "r") or die("Unable to open file!");
+$dataText = fread($datafile, filesize("data.txt"));
+fclose($datafile);
+$data = json_decode($dataText, true);
+// print_r($data);
+foreach ($data as $key => $value) {
+//    echo "key: $key<br>";
+//    print_r($value);
+//    echo "<br><br>";
+    $district = $app->districtById($value['district_id'], $value['district_name']);
+    if ($district) {
+        $district->pushDetails($value);
+    }
+    else {
+        // TODO: Error message
+    }
+}
 
-
-// $app->printInfo();
+$app->setDistrictById($paramDistrictId);
+$app->setYear($paramYear);
 
 ?>
 
@@ -824,6 +840,22 @@ if ($result) {
         </div>
     </div>
     <script>
+
+        async function getDataByAPICall() {
+            let response = await fetch('https://api.oklabflensburg.de/sozialatlas/v1/district/details');
+
+            if (response.ok) {
+                // if HTTP-status is 200-299
+                // get the response body (the method explained below)
+                // let json = await response.json();
+                let text = await response.text();
+                // console.log(text);
+            } else {
+                alert("HTTP-Error: " + response.status);
+            }
+        }
+        // getDataByAPICall();
+
         const canvas = document.getElementById('barChart1');
         canvas.width = 800;
         canvas.height = 400;
