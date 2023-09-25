@@ -1,6 +1,6 @@
 <?php
 
-include_once("./../core/core.php"); // TODO: To use or not to use?
+// include_once("./../core/core.php"); // TODO: To use or not to use?
 
 
 $paramDistrictId = isset($_GET['d']) ? $_GET['d'] : 1;
@@ -773,7 +773,7 @@ if ($result) {
 <head>
     <meta charset="utf-8">
     <title>Sozialatlas Dashboard - Stadt Flensburg</title>
-    <meta content="Stastische Daten des Sozialatlas 2022 der Stadt Flensburg" name="description">
+    <meta content="Statische Daten des Sozialatlas 2022 der Stadt Flensburg" name="description">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="dashboard.css">
     <!--script src="https://cdn.tailwindcss.com"></script-->
@@ -787,6 +787,7 @@ if ($result) {
             <p>Experimentelle Testversion, Stand 24.09.2023, oklabflensburg.de</p>
         </div>
         <div style="margin-left: auto; padding:20px;">
+            <img src="img/stadtteile.svg" style="width:700px; height:500px; margin-right:32px;">
             <img src="img/flensburg-logo.svg" style="width:200px; height:60px; margin-right:32px;">
             <img src="img/oklab-flensburg-logo.svg" style="width:60px; height:60px;">
         </div>
@@ -811,10 +812,103 @@ if ($result) {
             <?php html1($app->currentDistrict(), $app->currentYear); ?>
         </div>
         <div class="subContainerFull _1of4 graphics">
-            Balken mit den Einwohner*innen der Stadtteile
+            <canvas class="chart" id="barChart1"  data-values="50,30,70,45,90,60,20,75,40,85"></canvas>
+            <div id="barChart1Info"></div>
         </div>
     </div>
+    <script>
+        const canvas = document.getElementById('barChart1');
+        canvas.width = 800;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        var barSpacing = 4;
+        var barWidth = (canvas.width - barSpacing * 10) / 10;
+        var maxValue = Math.max(...getValuesFromDataAttribute(canvas));
+        var scaleFactor = canvas.height / maxValue;
+        const barColors = [
+            [209, 228, 253], [209, 228, 253], [209, 228, 253], [  0, 105, 246],
+            [209, 228, 253], [209, 228, 253], [209, 228, 253], [209, 228, 253],
+            [209, 228, 253], [209, 228, 253]];
+        const darkeningFactor = 0.7; // Factor to darken the color
+        const infoElement = document.getElementById('barChart1Info');
 
+        canvas.addEventListener('mousemove', handleMouseHover);
+        canvas.addEventListener('mouseleave', handleMouseExit);
+
+
+        let hoveredBarIndex = -1;
+
+        function drawBars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            barWidth = (canvas.width - barSpacing * 10) / 10;
+            scaleFactor = canvas.height / maxValue;
+
+            const values = getValuesFromDataAttribute(canvas);
+
+            // ctx.fillStyle = 'rgb(255, 0, 0)';
+            // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < values.length; i++) {
+                const value = values[i];
+                const x = i * (barWidth + barSpacing);
+                const barHeight = value * scaleFactor;
+                const y = canvas.height - barHeight;
+                const isHovered = i === hoveredBarIndex;
+
+                // Calculate the color for the bar
+                const color = isHovered ? darkenColor(barColors[i]) : barColors[i];
+
+                ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                if (isHovered) {
+                    // Display the value of the hovered bar in the infoElement
+                    // infoElement.textContent = `Hovered Value: ${values[hoveredBarIndex]}`;
+                    infoElement.textContent = 'width: ' + canvasElementWidth + ', height: ' + canvasElementHeight;
+                }
+            }
+        }
+
+        function handleMouseHover(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            let e = document.getElementById('barChart1');
+            canvasElementWidth = e.offsetWidth;
+            canvasElementHeight = e.offsetHeight;
+            barWidth = (canvasElementWidth - barSpacing * 10) / 10;
+
+            hoveredBarIndex = Math.floor(mouseX / (barWidth + barSpacing));
+            drawBars();
+        }
+
+        function handleMouseExit() {
+            hoveredBarIndex = -1;
+
+            drawBars();
+            infoElement.textContent = ''; // Clear the info element when mouse exits
+        }
+
+        // Helper function to get values from data attribute
+        function getValuesFromDataAttribute(element) {
+            const valuesAttribute = element.getAttribute('data-values');
+            if (valuesAttribute) {
+                return valuesAttribute.split(',').map(Number);
+            }
+            return [];
+        }
+
+        // Helper function to darken a color
+        function darkenColor(color) {
+            const r = Math.round(color[0] * darkeningFactor);
+            const g = Math.round(color[1] * darkeningFactor);
+            const b = Math.round(color[2] * darkeningFactor);
+            return [r, g, b];
+        }
+
+        drawBars();
+    </script>
 
     <div class="sectionHeading">Schule/Arbeit/Rente</div>
 
