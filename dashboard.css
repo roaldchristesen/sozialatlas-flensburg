@@ -147,6 +147,7 @@ header {
 }
 
 
+/* SVG hover, see: https://codepen.io/miguelra/pen/NrjNYr */
 .svg-xxxx * {
   transition: all 0.25s ease-out;
 }
