@@ -668,13 +668,17 @@ if ($use = "file") {
     <header>
         <div>
             <h1>Sozialatlas der Stadt Flensburg</h1>
-            <p>Experimentelle Testversion, Stand 24.09.2023, oklabflensburg.de</p>
+            <p>
+                Experimentelle Testversion, Stand 24.09.2023, oklabflensburg.de<br>
+                <a href="https://www.flensburg.de/Leben-Soziales/Familie-Soziales/Sozialatlas/">Sozialatlas auf flensburg.de</a>
+            </p>
+            
         </div>
         <div style="margin-left: auto; padding:20px;">
             <?php include("img/flensburg-stadtteile.svg"); ?>
             <!--img src="img/stadtteile.svg" style="width:700px; height:500px; margin-right:32px;"-->
-            <img src="img/flensburg-logo.svg" style="width:200px; height:60px; margin-right:32px;">
-            <img src="img/oklab-flensburg-logo.svg" style="width:60px; height:60px;">
+            <a href="https://www.flensburg.de"><img src="img/flensburg-logo.svg" style="width:200px; height:60px; margin-right:32px;"></a>
+            <a href="https://oklabflensburg.de"><img src="img/oklab-flensburg-logo.svg" style="width:60px; height:60px;"></a>
         </div>
     </header>
 
