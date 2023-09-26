@@ -102,7 +102,7 @@ sudo less +F /var/log/syslog
 ​
 ```
 git clone https://github.com/roaldchristesen/sozialatlas-flensburg.git
-cd /opt/git/open-monuments-map/
+cd /opt/git/sozialatlas-flensburg/
 ```
 ​
 ​
